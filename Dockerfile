@@ -2,26 +2,16 @@ FROM node:20.1-alpine AS builder
 
 RUN apk add --update --no-cache openssl1.1-compat
 
-#
-ARG DATABASE_URL
-ENV DATABASE_URL=${DATABASE_URL}
-
 # Create app directory
 WORKDIR /app
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
-COPY prisma ./prisma/
 
 # Install app dependencies
 RUN npm install
 
-
 COPY . .
-
-RUN npx prisma generate --schema=/app/prisma/schema.prisma
-
-RUN npx prisma migrate deploy
 
 RUN npm run build
 
